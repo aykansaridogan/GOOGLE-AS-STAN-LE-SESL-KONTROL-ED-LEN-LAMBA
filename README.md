@@ -8,7 +8,6 @@ Kullanacağımız Malzemeler:
 •	USB mikrofon 
 
 
-
 ![image](https://user-images.githubusercontent.com/105684427/171407442-67d3eb32-dbea-4014-9b35-8f6aa0c23bfd.png)
 
 
@@ -26,15 +25,19 @@ pip3 install RPi.GPiO
 Hoparlör ve Mikrofon Yapılandırması
 Şimdi hoparlör ve mikrofonunun yazılımsal olarak hangi porta bağlı olduğunu bulmak için aşağıdaki kodu çalıştırıyoruz.
 
-
 ![image](https://user-images.githubusercontent.com/105684427/171407514-c96ea2fc-72cf-47c3-baad-b7d9f0dfc06e.png)
+
+
 Bu kod bize hoparlör ve mikrofonumuzun bağlı olduğu portların yazılımsal yerini söylüyor ve şuna benzer bir çıkış veriyor.
 
 
 ![image](https://user-images.githubusercontent.com/105684427/171407558-20fa8255-27b4-414d-b99c-d91f96a0b63b.png)
 
+
 Mikrofon ve hoparlör yapılandırılması için bu “hw” ve “index” değerleri gerekli olacak. Biz mikrofonu USB portuna taktığımız için “USB PnP Sound Device” isminin mikrofonumuzu belirttiğini biliyoruz. PnP Device’ ın karşısındaki “hw:1,0” ve “index=1” değerini not aldık. Aynı şekilde hoparlörümüz de “Headphone” yani jack girişine taktığımız için “Headphones” kısmı da hoparlörümüzün yazılımsal yerini bize söyledi. Hoparlör içinse “hw:2,0” değerini not aldık.
 Konsol ekranına şu kodu yazıp çalıştırıyoruz.
+
+
 ![image](https://user-images.githubusercontent.com/105684427/171407609-99e5435b-f8d9-428d-ab2e-1f680703279c.png)
 
 
@@ -58,11 +61,14 @@ Burada ilk olarak ses kartımızı seçiyoruz. Sonra da klavyeden iki kere TAB t
 
 
 Şimdi de klavyeden ESC tuşu ile arayüzü kapatalım. Yine alsamixer ->F6 yapıp bu sefer “headphones” kısmına girelim. Bizi şöyle bir arayüz karşılayacak.
+
+
 ![image](https://user-images.githubusercontent.com/105684427/171407893-ae344433-5f40-4daf-a59b-4a66a288aa37.png)
+
+
 Aşağıdaki kodla Raspberry Pi ayarları kısmına gidip hoparlörümüzün yapılandırmasını bitirelim.
            sudo raspi-config
 Bu kısımda System Options -> Audio -> Headphones seçip onayladık.
-
 
 Hoparlörünüzden sesli dönüt almak için os.system ile .mp3 uzantılı dosyaları ekledik.
 
