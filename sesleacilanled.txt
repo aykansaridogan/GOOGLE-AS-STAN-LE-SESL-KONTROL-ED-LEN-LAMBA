@@ -1,0 +1,45 @@
+#!/usr/bin/python3 
+# - *- coding: utf- 8 - *-
+import speech_recognition as sr  #ses algılama kütüphanesi
+import RPi.GPIO as GPIO    #Raspberry Pi GPIO pinlerini dahil ettik
+import os    #sesli geri dönüş alabilmek için ihtiyacımız olacak
+import time     #zaman kütüphanesi
+GPIO.setwarnings(False)   #uyarıları kapattık
+GPIO.setmode(GPIO.BOARD)  #Raspberry Pi pinlerinin ismini değil sıralamasını kullandığımızı belirttik
+GPIO.setup(11, GPIO.OUT)     #11 numaralı GPIO17 pinini OUTPUT olarak ayarladık
+
+r = sr.Recognizer()       #fonksiyonu "r" ismiyle çağıracağımızı belirttik
+speech = sr.Microphone(device_index=1)  #mikrofonumuzun index değerini girdik
+def mic_text_doc():        #söylediklerimizi yazıya çevirecek bir fonksiyon tanımladık                  
+    recog = "-"   #İlk değer ataması yaptık ki "recog" fonksiyondan boş dönerse hata oluşmasın
+    with speech as source:
+        print("Dinliyorum")
+        r.adjust_for_ambient_noise(source)  #ses kalibrasyonu 
+        audio = r.listen(source)  #sesimiz Google servisine gidiyor
+        try:
+            recog = r.recognize_google(audio, language = 'TR- tr')  #dili Türkçe olarak ayarladık
+        except sr.UnknownValueError:          #oluşabilecek hatalara karşı bilgilendirme                
+            print("Anlaşılmadı")
+        except sr.RequestError as e:
+            print("Servis hatası; {0}".format(e))
+    
+    print("Bunu dedin: " + recog)     #sesimiz yazıya dönüştürülmüştü şimdi onu ekrana yazdırdık
+    return recog
+def led_on(pin):  #led açma fonksiyonumuzu tanımladık
+    os.system("mpg321 C:\emreg\Downloads\led_on.mp3  &") 
+    time.sleep(0.5) #0.5 saniye bekleme
+    GPIO.output(pin,GPIO.HIGH)  #pinimizi lojik1 olarak ayarladık
+    time.sleep(0.5)
+def led_off(pin): #led kapama fonksiyonumuzu tanımladık
+    os.system("mpg321 mpg321 C:\emreg\Downloads\led_off.mp3 &") 
+    time.sleep(0.5)
+    GPIO.output(pin,GPIO.LOW) #pinimizi lojik0 olarak ayarladık
+    time.sleep(0.5)
+    
+while True: #sonsuz döngü oluşturduk 
+     recog = mic_text_doc().lower() #büyük küçük harf ayrımını ortadan kaldırmak için .lower() kullandık
+     text=recog
+     if "aç" in text:  #eğer cümlemizde "aç" kelimesi geçtiyse...
+         led_on(11)  #ledi açan fonksiyonumuzu çağırdık ve pin numarasını girdik.       
+     if "kapat" in text:
+         led_off(11)  #ledi kapatan fonksiyonumuzu çağırdık ve pin numarasını girdik.
